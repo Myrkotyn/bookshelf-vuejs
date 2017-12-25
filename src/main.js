@@ -6,7 +6,9 @@ import router from './router'
 import moment from 'moment'
 import VueResource from 'vue-resource'
 import VeeValidate from 'vee-validate'
+import Paginate from 'vuejs-paginate'
 
+Vue.component('paginate', Paginate)
 Vue.use(VueResource)
 Vue.use(VeeValidate)
 Vue.config.productionTip = false

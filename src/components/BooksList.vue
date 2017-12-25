@@ -36,7 +36,8 @@
               v-on:mouseleave="mouseLeave()" v-on:click="detailView(book.id)">
             <td>
               <router-link :to="{name: 'DetailBook', params: {id: book.id}}" class="row-link">{{ book.title }}
-                <router-link :to="{ name: 'EditBook', params: { id: book.id } }"><i class="far fa-edit"></i></router-link>
+                <router-link :to="{ name: 'EditBook', params: { id: book.id } }"><i class="far fa-edit"></i>
+                </router-link>
               </router-link>
 
             </td>
@@ -68,6 +69,20 @@
         </table>
       </div>
     </div>
+    <div class="row">
+      <div class="col text-center">
+        <paginate
+          :page-count="paginatorPageCount"
+          :click-handler="updateBooksResource"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="'list-inline'"
+          :page-class="'list-inline-item'"
+          :prev-class="'list-inline-item'"
+          :next-class="'list-inline-item'">
+        </paginate>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,10 +93,14 @@
       return {
         msg: 'Books list',
         activeIndex: null,
-        books: []
+        books: [],
+        paginatorPageCount: 1
       }
     },
     methods: {
+      updateBooksResource: function (page) {
+        this.loadBooks(page)
+      },
       imagePath: function (imageName) {
         return 'http://bookshelf.work/uploads/images/books/' + imageName
       },
@@ -92,21 +111,25 @@
         this.activeIndex = null
       },
       detailView: function (bookId) {
+      },
+      loadBooks: function (page = 1) {
+        this.$http.get('api/books?page=' + page)
+          .then(response => {
+            this.books = response.data.books
+            this.paginatorPageCount = response.data.paginatorCount
+          })
+          .catch(e => {
+            console.log(e)
+          })
       }
     },
     created () {
-      this.$http.get('api/books')
-        .then(response => {
-          this.books = response.data
-        })
-        .catch(e => {
-          console.log(e)
-        })
+      this.loadBooks()
     }
   }
 </script>
 
-<style scoped>
+<style>
   .tooltip {
     text-decoration: none;
     position: relative;
@@ -129,6 +152,7 @@
     margin-bottom: 15px;
     margin-top: 15px;
   }
+
   table tr td a.row-link:hover {
     text-decoration: none;
   }
@@ -145,4 +169,24 @@
     color: #2651ca;
   }
 
+  .list-inline li {
+    width: 60px;
+  }
+
+  .list-inline .list-inline-item.active {
+    border-radius: 5px;
+    background-color: #2651ca;
+  }
+  .list-inline .list-inline-item.active a {
+    color: white;
+  }
+  .list-inline li a:focus {
+    outline: none;
+  }
+
+  .pagination li a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
 </style>
