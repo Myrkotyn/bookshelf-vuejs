@@ -14,6 +14,7 @@ Vue.filter('date', function (value) {
   return moment(String(value)).format('MM/DD/YYYY')
 })
 Vue.http.options.root = 'http://bookshelf.work/'
+Vue.http.options.emulateJSON = true
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

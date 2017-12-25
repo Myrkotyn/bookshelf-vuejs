@@ -16,7 +16,8 @@
         <div class="col-4">
           <div class="form-group">
             <label for="author">Author</label>
-            <select id="author" name="author" class="form-control" v-model="book.author.id" v-validate="'required'"
+            <select id="author" name="author" class="form-control" v-model="book.author.id"
+                    v-validate="'required'"
                     :class="{'input': true, 'is-danger': errors.has('author') }">
               <option v-for="(author, index) in authors" v-bind:value="author.id">
                 {{ author.name }}
@@ -28,7 +29,8 @@
         <div class="col-4">
           <div class="form-group">
             <label for="genre">Genre</label>
-            <select name="genre" id="genre" class="form-control" v-model="book.genre.id" v-validate="'required'"
+            <select name="genre" id="genre" class="form-control" v-model="book.genre.id"
+                    v-validate="'required'"
                     :class="{'input': true, 'is-danger': errors.has('genre') }">
               <option v-for="genre in genres" v-bind:value="genre.id">
                 {{ genre.name }}
@@ -40,7 +42,8 @@
         <div class="col-4">
           <div class="form-group">
             <label for="language">Language</label>
-            <select name="language" id="language" class="form-control" v-model="book.language.id" v-validate="'required'"
+            <select name="language" id="language" class="form-control" v-model="book.language.id"
+                    v-validate="'required'"
                     :class="{'input': true, 'is-danger': errors.has('language') }">
               <option v-for="language in languages" v-bind:value="language.id">
                 {{ language.name }}
@@ -123,6 +126,37 @@
     },
     methods: {
       bookPut: function () {
+        this.$validator.validateAll()
+          .then((result) => {
+            if (!result) {
+              return false
+            }
+            let file = this.$refs.file.files[0]
+            let data = new FormData()
+            data.append('book_update[imageFile]', file)
+            data.append('book_update[title]', this.book.title)
+            data.append('book_update[publicationDate]', this.book.publicationDate)
+            data.append('book_update[ISBNNumber]', this.book.ISBNNumber)
+            data.append('book_update[author]', this.book.author.id)
+            data.append('book_update[genre]', this.book.genre.id)
+            data.append('book_update[language]', this.book.language.id)
+            data.set('_method', 'put')
+            this.$http.post('api/books/' + this.$route.params.id, data, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              emulateJSON: true
+            })
+              .then(response => {
+                this.$router.push({
+                  name: 'DetailBook',
+                  params: {id: response.body.id}
+                })
+              })
+              .catch(e => {
+                console.log(e)
+              })
+          })
       }
     },
     created () {
@@ -162,5 +196,12 @@
 </script>
 
 <style scoped>
+  .help {
+    color: #ca3d3d;
+  }
 
+  .is-danger {
+    border-color: #ca3d3d;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 18, 0.25)
+  }
 </style>
