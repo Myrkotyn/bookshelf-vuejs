@@ -4,7 +4,8 @@
     <div class="row" style="margin-bottom: 10px;">
       <div class="col-md-3">
         <div class="row">
-          <div class="col-md-10"><input type="text" placeholder="Search..." class="form-control" v-model="search" v-on:keyup.enter="searchBook"></div>
+          <div class="col-md-10"><input type="text" placeholder="Search..." class="form-control" v-model="search"
+                                        v-on:keyup.enter="searchBook"></div>
           <div class="col-md-2">
             <button class="btn btn-default" v-on:click="searchBook">Go</button>
           </div>
@@ -28,6 +29,7 @@
             <th>language</th>
             <th>date</th>
             <th>isbn</th>
+            <th>image</th>
           </tr>
           </thead>
           <tbody>
@@ -63,7 +65,11 @@
               <router-link :to="{name: 'DetailBook', params: {id: book.id}}" class="row-link">{{ book.ISBNNumber }}
               </router-link>
             </td>
-            <!--<td><img v-bind:src="imagePath(book.imageName)" alt=""></td>-->
+            <td>
+              <router-link :to="{name: 'DetailBook', params: {id: book.id}}" class="row-link">
+                <img :src="imagePath(book.imageName)" alt="" class="image">
+              </router-link>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -95,7 +101,8 @@
         activeIndex: null,
         books: [],
         paginatorPageCount: 1,
-        search: ''
+        search: '',
+        showImage: false
       }
     },
     methods: {
@@ -107,7 +114,7 @@
         this.loadBooks(page, this.search)
       },
       imagePath: function (imageName) {
-        return 'http://bookshelf.work/uploads/images/books/' + imageName
+        return process.env.API + 'uploads/images/books/' + imageName
       },
       mouseOver: function (val, index) {
         this.activeIndex = index
@@ -195,5 +202,11 @@
     color: black;
     padding: 8px 16px;
     text-decoration: none;
+  }
+  img.image {
+    max-width: 150px;
+  }
+  .disabled {
+    display: none;
   }
 </style>
