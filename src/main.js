@@ -15,7 +15,7 @@ Vue.config.productionTip = false
 Vue.filter('date', function (value) {
   return moment(String(value)).format('MM/DD/YYYY')
 })
-Vue.http.options.root = 'http://bookshelf.work/'
+Vue.http.options.root = process.env.API
 Vue.http.options.emulateJSON = true
 /* eslint-disable no-new */
 new Vue({
