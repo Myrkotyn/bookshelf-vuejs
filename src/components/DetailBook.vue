@@ -20,6 +20,9 @@
 
           <dt class="col-sm-6">ISBN Number</dt>
           <dd class="col-sm-6">{{ book.ISBNNumber }}</dd>
+
+          <dt class="col-sm-6">Image</dt>
+          <dd class="col-sm-6"><img :src="imagePath()" alt="image" class="image"></dd>
         </dl>
         <router-link :to="{ name: 'EditBook', params: { id: book.id } }" class="btn btn-primary">Edit</router-link>
       </div>
@@ -40,7 +43,7 @@
     },
     methods: {
       imagePath: function () {
-        return 'http://bookshelf.work/uploads/images/books/' + this.book.imageName
+        return process.env.API + 'uploads/images/books/' + this.book.imageName
       }
     },
     created () {
@@ -55,6 +58,8 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+  img.image {
+    max-width: 150px;
+  }
 </style>
