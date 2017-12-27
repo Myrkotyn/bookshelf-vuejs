@@ -4,9 +4,9 @@
     <div class="row" style="margin-bottom: 10px;">
       <div class="col-md-3">
         <div class="row">
-          <div class="col-md-10"><input type="text" placeholder="Search..." class="form-control"></div>
+          <div class="col-md-10"><input type="text" placeholder="Search..." class="form-control" v-model="search" v-on:keyup.enter="searchBook"></div>
           <div class="col-md-2">
-            <button class="btn btn-default">Go</button>
+            <button class="btn btn-default" v-on:click="searchBook">Go</button>
           </div>
         </div>
       </div>
@@ -94,12 +94,17 @@
         msg: 'Books list',
         activeIndex: null,
         books: [],
-        paginatorPageCount: 1
+        paginatorPageCount: 1,
+        search: ''
       }
     },
     methods: {
+      searchBook: function () {
+        let page = 1
+        this.loadBooks(page, this.search)
+      },
       updateBooksResource: function (page) {
-        this.loadBooks(page)
+        this.loadBooks(page, this.search)
       },
       imagePath: function (imageName) {
         return 'http://bookshelf.work/uploads/images/books/' + imageName
@@ -112,8 +117,8 @@
       },
       detailView: function (bookId) {
       },
-      loadBooks: function (page = 1) {
-        this.$http.get('api/books?page=' + page)
+      loadBooks: function (page = 1, search = '') {
+        this.$http.get('api/books?page=' + page + '&search=' + search)
           .then(response => {
             this.books = response.data.books
             this.paginatorPageCount = response.data.paginatorCount
@@ -177,9 +182,11 @@
     border-radius: 5px;
     background-color: #2651ca;
   }
+
   .list-inline .list-inline-item.active a {
     color: white;
   }
+
   .list-inline li a:focus {
     outline: none;
   }
